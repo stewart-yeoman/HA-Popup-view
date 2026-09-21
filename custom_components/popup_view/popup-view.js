@@ -442,7 +442,20 @@
         transparentBackground = false,
         theme = ""
       } = options;
-      document.querySelector('.subview-popup-overlay')?.remove();
+
+      // If a prior popup exists with the same subviewPath, treat this call
+      // to openPopup() as a visibility toggle: remove the prior popup and
+      // return immediately without creating a new popup.
+      const prior_popup = document.querySelector('.subview-popup-overlay');
+      if (prior_popup) {
+	      const prior_popup_subviewPath = prior_popup.dataset.subviewPath ;
+	      prior_popup.remove();
+
+	      if (prior_popup_subviewPath === subviewPath) {
+		      return;
+	      }
+      }
+      // document.querySelector('.subview-popup-overlay')?.remove();
       document.body.style.overflow = 'hidden';
       document.body.style.position = 'fixed';
       document.body.style.width = '100%';
@@ -451,6 +464,7 @@
       popup.dataset.alignment = alignment;
       popup.dataset.animationSpeed = animationSpeed;
       popup.dataset.popupWidth = popupWidth;
+      popup.dataset.subviewPath = subviewPath;
       let overlayAlignment = 'flex-end';
       if (alignment === 'center') {
         overlayAlignment = 'center';
